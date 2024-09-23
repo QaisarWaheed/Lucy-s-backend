@@ -1,0 +1,25 @@
+{
+  "name": "backend_something",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/typescript": "^0.4.29",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "helmet": "^7.1.0",
+    "nodemon": "^3.1.7",
+    "pg": "^8.13.0",
+    "pg-promise": "^11.9.1",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17"
+  },
+  "description": ""
+}
