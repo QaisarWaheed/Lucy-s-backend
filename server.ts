@@ -4,6 +4,9 @@ import { AppDataSource } from "./src/DB/data.source";
 import cashcreditRouter from "./src/router/cashcreditRouter";
 import cashdebitRouter from "./src/router/cashdebitRouter";
 import journalRouter from "./src/router/journalRouter";
+import InvoiceCreditRouter from "./src/router/InvoiceCreditRouter";
+import cashbookRouter from "./src/router/cashbookRouter";
+import gstSaleRouter from "./src/router/gstSaleRouter";
 
 const express = require("express");
 const server = express();
@@ -14,6 +17,9 @@ server.use("/admin", adminRouter);
 server.use("/cashdebit", cashdebitRouter);
 server.use("/cashcredit", cashcreditRouter);
 server.use("/journal", journalRouter);
+server.use("/invoice", InvoiceCreditRouter)
+server.use("/cashbook", cashbookRouter)
+server.use("/gst", gstSaleRouter)
 try {
   AppDataSource.initialize().then(() => {
     console.log("Database is initialized");
