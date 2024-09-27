@@ -5,6 +5,7 @@ import cashDebit from "../entities/cashdebit";
 import Journal from "../entities/journal";
 import Invoice from "../entities/invoice";
 import GstSale from "../entities/gstSale";
+import PurchaseInvoice from "../entities/PurchaseInvoice";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -16,7 +17,15 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   migrationsRun: false,
   logging: false,
-  entities: [Admin, cashCredit, cashDebit, Journal, Invoice, GstSale],
+  entities: [
+    Admin,
+    cashCredit,
+    cashDebit,
+    Journal,
+    Invoice,
+    GstSale,
+    PurchaseInvoice,
+  ],
   migrations: [],
   subscribers: [],
 });
