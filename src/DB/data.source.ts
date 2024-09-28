@@ -6,6 +6,8 @@ import Journal from "../entities/journal";
 import Invoice from "../entities/invoice";
 import GstSale from "../entities/gstSale";
 import PurchaseInvoice from "../entities/PurchaseInvoice";
+import PurchaseInvoiceGST from "../entities/PurchaseInvoiceGST";
+import AccountOpen from "../entities/Accounts";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -25,6 +27,8 @@ export const AppDataSource = new DataSource({
     Invoice,
     GstSale,
     PurchaseInvoice,
+    PurchaseInvoiceGST,
+    AccountOpen,
   ],
   migrations: [],
   subscribers: [],
