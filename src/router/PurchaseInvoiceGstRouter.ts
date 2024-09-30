@@ -1,6 +1,8 @@
 import { request, Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import PurchaseInvoiceGST from "../entities/PurchaseInvoiceGST";
+import PurchaseInvoiceData from "../validation/PurchaseInvoice.validate";
+import PurchaseInvoiceGSTData from "../validation/PurchaseInvoiceGst.validate";
 
 const router = Router();
 
@@ -27,12 +29,12 @@ router.get("/:id", async function (req: Request, res: Response) {
 });
 
 router.post("/", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(PurchaseInvoiceGSTData);
   const newRecord = PiGstRepo.create({
     InvoiceDate: new Date(),
     PartyBill: data.PartyBill,
     PartyBillDate: new Date(),
-    Supplier: data.supplier,
+    Supplier: data.Supplier,
     SupplierTitle: data.SupplierTitle,
     PurchaseAccount: data.PurchaseAccount,
     PurchaseACTitle: data.PurchaseACTitle,
@@ -54,7 +56,7 @@ router.post("/", async function (req: Request, res: Response) {
 
 router.patch("/:id", async function (req: Request, res: Response) {
   const params = req.params;
-  const data = req.body;
+  const data = await req.validate(PurchaseInvoiceGSTData);
   const found = await PiGstRepo.findOneBy({
     ComputerNumber: parseInt(params.id),
   });
@@ -67,7 +69,7 @@ router.patch("/:id", async function (req: Request, res: Response) {
       InvoiceDate: new Date(),
       PartyBill: data.PartyBill,
       PartyBillDate: new Date(),
-      Supplier: data.supplier,
+      Supplier: data.Supplier,
       SupplierTitle: data.SupplierTitle,
       PurchaseAccount: data.PurchaseAccount,
       PurchaseACTitle: data.PurchaseACTitle,

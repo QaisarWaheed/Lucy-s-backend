@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import AccountOpen from "../entities/Accounts";
 import { Between } from "typeorm";
+import AccountOpenData from "../validation/ACcount.validate";
 
 const router = Router();
 const AccountRepo = AppDataSource.manager.getRepository(AccountOpen);
@@ -46,7 +47,7 @@ router.get("/ledger/:code", async function (req: Request, res: Response) {
 });
 
 router.post("/account-open", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(AccountOpenData);
   const found = await AccountRepo.findOneBy({ Title: data.Title });
   if (found) {
     res.status(400).send(`An account with title: ${data.Title} already exist`);
@@ -62,7 +63,7 @@ router.post("/account-open", async function (req: Request, res: Response) {
 });
 
 router.patch("/opening", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(AccountOpenData);
   const found = await AccountRepo.findOneBy({ Title: data.Title });
   if (!found) {
     res

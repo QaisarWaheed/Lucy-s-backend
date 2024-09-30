@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 
 import { AppDataSource } from "../DB/data.source";
 import cashCredit from "../entities/cashcredit";
+import cashCreditData from "../validation/Cashcredit.validate";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.post("/", async function (req: Request, res: Response) {
   try {
-    const data = req.body;
+    const data = await req.validate(cashCreditData);
     const newCashCredit = CashCreditRepo.create({
       CreditAmount: data.CreditAmount,
       AccountCode: data.AccountCode,
@@ -43,7 +44,7 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(cashCreditData);
   const params = req.params;
   const found = await CashCreditRepo.findOneBy({
     voucherNumber: parseInt(params.id),

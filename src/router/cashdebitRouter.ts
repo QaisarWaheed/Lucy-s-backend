@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 
 import { AppDataSource } from "../DB/data.source";
 import cashDebit from "../entities/cashdebit";
+import cashDebitData from "../validation/CashDebit.validate";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.post("/", async function (req: Request, res: Response) {
   try {
-    const data = req.body;
+    const data = await req.validate(cashDebitData);
     const newCashDebit = CashDebitRepo.create({
       DebitAmount: data.DebitAmount,
       AccountCode: data.AccountCode,
@@ -43,7 +44,7 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(cashDebitData);
   const params = req.params;
   const found = await CashDebitRepo.findOneBy({
     voucherNumber: parseInt(params.id),

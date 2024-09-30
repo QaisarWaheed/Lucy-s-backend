@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import PurchaseInvoice from "./../entities/PurchaseInvoice";
+import PurchaseInvoiceData from "../validation/PurchaseInvoice.validate";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 });
 
 router.post("/", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(PurchaseInvoiceData);
   const newPurchaseinvoice = PInvoiceRepo.create({
     InvoiceDate: new Date(),
     referenceNumber: data.referenceNumber,
@@ -49,7 +50,7 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = req.body;
+  const data = await req.validate(PurchaseInvoiceData);
   const params = req.params;
   const found = await PInvoiceRepo.findOneBy({
     invoiceNumber: parseInt(params.id),

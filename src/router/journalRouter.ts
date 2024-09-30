@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import Journal from "./../entities/journal";
+import JournalData from "../validation/journal.validate";
 
 const router = Router();
 
@@ -24,7 +25,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.post("/", async function (req: Request, res: Response) {
   try {
-    const data = req.body;
+    const data = await req.validate(JournalData);
 
     const newJournal = JournalRepo.create({
       CreditAmount: data.CreditAmount,
@@ -41,7 +42,7 @@ router.post("/", async function (req: Request, res: Response) {
 
 router.patch("/:id", async function (req: Request, res: Response) {
   const params = req.params;
-  const data = req.body;
+  const data = await req.validate(JournalData);
   const found = await JournalRepo.findOneBy({
     VoucherNumber: parseInt(params.id),
   });
