@@ -4,10 +4,6 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 class PurchaseInvoiceData {
   @IsNotEmpty()
-  @IsNumber()
-  invoiceNumber: number;
-
-  @IsNotEmpty()
   @IsDate()
   InvoiceDate: Date;
 

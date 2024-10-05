@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import adminRouter from "./src/router/adminRouter";
-import { AppDataSource } from "./src/DB/data.source";
-import cashcreditRouter from "./src/router/cashcreditRouter";
-import cashdebitRouter from "./src/router/cashdebitRouter";
-import journalRouter from "./src/router/journalRouter";
-import InvoiceCreditRouter from "./src/router/InvoiceCreditRouter";
-import cashbookRouter from "./src/router/cashbookRouter";
-import gstSaleRouter from "./src/router/gstSaleRouter";
+import adminRouter from "./router/adminRouter";
+import { AppDataSource } from "./DB/data.source";
+import cashcreditRouter from "./router/cashcreditRouter";
+import cashdebitRouter from "./router/cashdebitRouter";
+import journalRouter from "./router/journalRouter";
+import InvoiceCreditRouter from "./router/InvoiceCreditRouter";
+import cashbookRouter from "./router/cashbookRouter";
+import gstSaleRouter from "./router/gstSaleRouter";
 
-import PurchaseInvoiceRouter from "./src/router/PurchaseInvoiceRouter";
-import PurchaseInvoiceGstRouter from "./src/router/PurchaseInvoiceGstRouter";
-import AccountOpenRouter from "./src/router/AccountOpenRouter";
-import { validation } from "validation/validation";
+import PurchaseInvoiceRouter from "./router/PurchaseInvoiceRouter";
+import PurchaseInvoiceGstRouter from "./router/PurchaseInvoiceGstRouter";
+import AccountOpenRouter from "./router/AccountOpenRouter";
+import { validation } from "./validation/validation";
 
 const express = require("express");
 const server = express();
@@ -22,6 +22,7 @@ server.use(validation);
 server.use("/admin", adminRouter);
 server.use("/cashdebit", cashdebitRouter);
 server.use("/cashcredit", cashcreditRouter);
+server.use("/cashbook", cashbookRouter);
 server.use("/journal", journalRouter);
 server.use("/invoice", InvoiceCreditRouter);
 server.use("/cashbook", cashbookRouter);

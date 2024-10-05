@@ -3,10 +3,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 class JournalData {
   @IsNotEmpty()
   @IsNumber()
-  VoucherNumber: number;
-
-  @IsNotEmpty()
-  @IsNumber()
   CreditAmount: number;
   @IsNotEmpty()
   @IsNumber()

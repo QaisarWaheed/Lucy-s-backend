@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
   username: "postgres",
   password: "root",
   database: "chemtronix",
-  synchronize: false,
+  synchronize: true,
   migrationsRun: false,
   logging: false,
   entities: [

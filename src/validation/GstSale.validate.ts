@@ -2,10 +2,6 @@ import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 class GstSaleData {
   @IsNotEmpty()
-  @IsNumber()
-  computerNumber: number;
-
-  @IsNotEmpty()
   @IsDate()
   InvoiceDate: Date;
 

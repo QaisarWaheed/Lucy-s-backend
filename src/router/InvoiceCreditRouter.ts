@@ -27,24 +27,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 router.post("/", async function (req: Request, res: Response) {
   try {
     const data = await req.validate(InvoiceData);
-    const newInvoice = InvoiceRepo.create({
-      po: data.po,
-      companyName: data.companyName,
-      delievryNumber: data.delievryNumber,
-      saleID: data.saleID,
-      saleTitle: data.saleTitle,
-      amount: data.amount,
-      discount: data.discount,
-      // discountAmount: (data.discount * data.amount)/100,
-      discountAmount: data.discountAmount,
-      netAmount: data.netAmount,
-      code: data.code,
-      productName: data.productName,
-      unit: data.unit,
-      quantity: data.quantity,
-      rate: data.rate,
-      description: data.description,
-    });
+    const newInvoice = InvoiceRepo.create(data);
 
     await InvoiceRepo.save(newInvoice);
     res.status(201).send(`new Invoice Created ${newInvoice}`);
@@ -63,24 +46,7 @@ router.patch("/:id", async function (req: Request, res: Response) {
     if (!found) {
       res.status(404).send(`no invoice found with id ${params.id}`);
     } else {
-      const updatedInvoice = await InvoiceRepo.update(found, {
-        po: data.po,
-        companyName: data.companyName,
-        delievryNumber: data.delievryNumber,
-        saleID: data.saleID,
-        saleTitle: data.saleTitle,
-        amount: data.amount,
-        discount: data.discount,
-        // discountAmount: (data.discount * data.amount)/100,
-        discountAmount: data.discountAmount,
-        netAmount: data.netAmount,
-        code: data.code,
-        productName: data.productName,
-        unit: data.unit,
-        quantity: data.quantity,
-        rate: data.rate,
-        description: data.description,
-      });
+      const updatedInvoice = await InvoiceRepo.update(found, data);
       res.status(200).send(`Invoice Updated ${updatedInvoice}`);
     }
   } catch (e) {

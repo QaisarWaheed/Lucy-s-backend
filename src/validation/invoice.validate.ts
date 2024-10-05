@@ -2,10 +2,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 class InvoiceData {
   @IsNotEmpty()
-  @IsNumber()
-  invoiceNumber: number;
-
-  @IsNotEmpty()
   @IsString()
   po: string;
 

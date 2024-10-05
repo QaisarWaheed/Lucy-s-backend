@@ -27,12 +27,7 @@ router.post("/", async function (req: Request, res: Response) {
   try {
     const data = await req.validate(JournalData);
 
-    const newJournal = JournalRepo.create({
-      CreditAmount: data.CreditAmount,
-      debitAmount: data.debitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-    });
+    const newJournal = JournalRepo.create(data);
     await JournalRepo.save(newJournal);
     res.status(201).send(newJournal);
   } catch (e) {
@@ -50,12 +45,7 @@ router.patch("/:id", async function (req: Request, res: Response) {
     if (!found) {
       res.status(404).send(`No Journal Fund with ID: ${params.id}`);
     } else {
-      const updateJournal = await JournalRepo.update(found, {
-        CreditAmount: data.CreditAmount,
-        debitAmount: data.debitAmount,
-        AccountCode: data.AccountCode,
-        AccountTitle: data.AccountTitle,
-      });
+      const updateJournal = await JournalRepo.update(found, data);
       res.status(200).send(updateJournal);
     }
   } catch (e) {

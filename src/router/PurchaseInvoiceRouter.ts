@@ -30,21 +30,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 router.post("/", async function (req: Request, res: Response) {
   try {
     const data = await req.validate(PurchaseInvoiceData);
-    const newPurchaseinvoice = PInvoiceRepo.create({
-      InvoiceDate: new Date(),
-      referenceNumber: data.referenceNumber,
-      referenceDate: data.referenceDate,
-      supplier: data.supplier,
-      supplierTitle: data.supplierTitle,
-      purchase_AC: data.purchase_AC,
-      purchaseTitle: data.purchaseTitle,
-      code: data.code,
-      productName: data.productName,
-      unit: data.unit,
-      quantity: data.quantity,
-      rate: data.rate,
-      amount: data.amount,
-    });
+    const newPurchaseinvoice = PInvoiceRepo.create(data);
 
     await PInvoiceRepo.save(newPurchaseinvoice);
     res.status(201).send(newPurchaseinvoice);
@@ -63,21 +49,7 @@ router.patch("/:id", async function (req: Request, res: Response) {
     if (!found) {
       res.status(200).send(`No Purchase Invoice found against ID ${params.id}`);
     } else {
-      const updatedPInvoice = await PInvoiceRepo.update(found, {
-        InvoiceDate: new Date(),
-        referenceNumber: data.referenceNumber,
-        referenceDate: data.referenceDate,
-        supplier: data.supplier,
-        supplierTitle: data.supplierTitle,
-        purchase_AC: data.purchase_AC,
-        purchaseTitle: data.purchaseTitle,
-        code: data.code,
-        productName: data.productName,
-        unit: data.unit,
-        quantity: data.quantity,
-        rate: data.rate,
-        amount: data.amount,
-      });
+      const updatedPInvoice = await PInvoiceRepo.update(found, data);
       res.status(200).send("Purchase Invoice Updated" + updatedPInvoice);
     }
   } catch (e) {

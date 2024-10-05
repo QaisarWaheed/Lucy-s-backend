@@ -3,10 +3,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 class cashDebitData {
   @IsNotEmpty()
   @IsNumber()
-  voucherNumber: number;
-
-  @IsNotEmpty()
-  @IsNumber()
   DebitAmount: number;
 
   @IsNotEmpty()

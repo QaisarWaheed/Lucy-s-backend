@@ -29,12 +29,7 @@ router.get("/:id", async function (req: Request, res: Response) {
 router.post("/", async function (req: Request, res: Response) {
   try {
     const data = await req.validate(cashDebitData);
-    const newCashDebit = CashDebitRepo.create({
-      DebitAmount: data.DebitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-      DebitDetails: data.DebitDetails,
-    });
+    const newCashDebit = CashDebitRepo.create(data);
 
     await CashDebitRepo.save(newCashDebit);
     res.status(201).send(`NewUser Created Successfully! ${newCashDebit}`);
@@ -56,12 +51,7 @@ router.patch("/:id", async function (req: Request, res: Response) {
         .status(404)
         .send(`No Cash Debit record found with VoucherNumber ${params.id}`);
     } else {
-      const updatedCashDebit = await CashDebitRepo.update(found, {
-        DebitAmount: data.DebitAmount,
-        AccountCode: data.AccountCode,
-        AccountTitle: data.AccountTitle,
-        DebitDetails: data.DebitDetails,
-      });
+      const updatedCashDebit = await CashDebitRepo.update(found, data);
       res.status(201).send("update Successfuly!");
     }
   } catch (e) {
