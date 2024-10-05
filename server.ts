@@ -11,12 +11,14 @@ import gstSaleRouter from "./src/router/gstSaleRouter";
 import PurchaseInvoiceRouter from "./src/router/PurchaseInvoiceRouter";
 import PurchaseInvoiceGstRouter from "./src/router/PurchaseInvoiceGstRouter";
 import AccountOpenRouter from "./src/router/AccountOpenRouter";
+import { validation } from "validation/validation";
 
 const express = require("express");
 const server = express();
 const port = 3000;
 AppDataSource.initialize();
 server.use(express.json());
+server.use(validation);
 server.use("/admin", adminRouter);
 server.use("/cashdebit", cashdebitRouter);
 server.use("/cashcredit", cashcreditRouter);

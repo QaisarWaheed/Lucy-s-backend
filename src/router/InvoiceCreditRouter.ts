@@ -54,33 +54,37 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const params = req.params;
-  const data = await req.validate(InvoiceData);
-  const found = await InvoiceRepo.findOneBy({
-    invoiceNumber: parseInt(params.id),
-  });
-  if (!found) {
-    res.status(404).send(`no invoice found with id ${params.id}`);
-  } else {
-    const updatedInvoice = await InvoiceRepo.update(found, {
-      po: data.po,
-      companyName: data.companyName,
-      delievryNumber: data.delievryNumber,
-      saleID: data.saleID,
-      saleTitle: data.saleTitle,
-      amount: data.amount,
-      discount: data.discount,
-      // discountAmount: (data.discount * data.amount)/100,
-      discountAmount: data.discountAmount,
-      netAmount: data.netAmount,
-      code: data.code,
-      productName: data.productName,
-      unit: data.unit,
-      quantity: data.quantity,
-      rate: data.rate,
-      description: data.description,
+  try {
+    const params = req.params;
+    const data = await req.validate(InvoiceData);
+    const found = await InvoiceRepo.findOneBy({
+      invoiceNumber: parseInt(params.id),
     });
-    res.status(200).send(`Invoice Updated ${updatedInvoice}`);
+    if (!found) {
+      res.status(404).send(`no invoice found with id ${params.id}`);
+    } else {
+      const updatedInvoice = await InvoiceRepo.update(found, {
+        po: data.po,
+        companyName: data.companyName,
+        delievryNumber: data.delievryNumber,
+        saleID: data.saleID,
+        saleTitle: data.saleTitle,
+        amount: data.amount,
+        discount: data.discount,
+        // discountAmount: (data.discount * data.amount)/100,
+        discountAmount: data.discountAmount,
+        netAmount: data.netAmount,
+        code: data.code,
+        productName: data.productName,
+        unit: data.unit,
+        quantity: data.quantity,
+        rate: data.rate,
+        description: data.description,
+      });
+      res.status(200).send(`Invoice Updated ${updatedInvoice}`);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

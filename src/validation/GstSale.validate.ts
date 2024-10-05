@@ -72,6 +72,9 @@ class GstSaleData {
   @IsNotEmpty()
   @IsNumber()
   GstAmount: number;
+
+  // created: Date;
+  // data: any;
 }
 
 export default GstSaleData;

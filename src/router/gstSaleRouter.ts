@@ -2,6 +2,8 @@ import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import GstSale from "../entities/gstSale";
 import GstSaleData from "../validation/GstSale.validate";
+import { validate } from "class-validator";
+import { errors } from "pg-promise";
 
 const router = Router();
 
@@ -25,65 +27,30 @@ router.get("/:id", async function (req: Request, res: Response) {
 });
 
 router.post("/", async function (req: Request, res: Response) {
-  const { data, created } = await req.validate(GstSaleData);
-  const newRecord = gstRepo.create({
-    InvoiceDate: new Date(created),
-    po: data.po,
-    poDate: new Date(created),
-    DeliveryNumber: data.DeliveryNumber,
-    DelievryDate: new Date(created),
-    Account: data.Account,
-    AccountTitle: data.AccountTitle,
-    SaleAccount: data.SaleAccount,
-    SaleTitle: data.SaleTitle,
-    NTN: data.NTN,
-    code: data.code,
-    ProductNumber: data.ProductNumber,
-    HsCode: data.HsCode,
-    quantity: data.quantity,
-    rate: data.rate,
-    netAmount: data.netAmount,
-    Gst: data.Gst,
-    GstRate: data.GstRate,
-    GstAmount: data.GstAmount,
-  });
+  const data = await req.validate(GstSaleData);
+
+  const newRecord = gstRepo.create(data);
 
   await gstRepo.save(newRecord);
   res.status(201).send(newRecord);
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const params = req.params;
-  const { data, created } = await req.validate(GstSaleData);
+  try {
+    const params = req.params;
+    const data = await req.validate(GstSaleData);
 
-  const found = await gstRepo.findOneBy({
-    computerNumber: parseInt(params.id),
-  });
-  if (!found) {
-    res.status(400).send(`no record Found with Computer Number ${params.id}`);
-  } else {
-    const updatedGstRecord = await gstRepo.update(found, {
-      InvoiceDate: new Date(created),
-      po: data.po,
-      poDate: new Date(created),
-      DeliveryNumber: data.DeliveryNumber,
-      DelievryDate: new Date(created),
-      Account: data.Account,
-      AccountTitle: data.AccountTitle,
-      SaleAccount: data.SaleAccount,
-      SaleTitle: data.SaleTitle,
-      NTN: data.NTN,
-      code: data.code,
-      ProductNumber: data.ProductNumber,
-      HsCode: data.HsCode,
-      quantity: data.quantity,
-      rate: data.rate,
-      netAmount: data.netAmount,
-      Gst: data.Gst,
-      GstRate: data.GstRate,
-      GstAmount: data.GstAmount,
+    const found = await gstRepo.findOneBy({
+      computerNumber: parseInt(params.id),
     });
-    res.status(200).send(updatedGstRecord);
+    if (!found) {
+      res.status(400).send(`no record Found with Computer Number ${params.id}`);
+    } else {
+      const updatedGstRecord = await gstRepo.update(found, data);
+      res.status(200).send(updatedGstRecord);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

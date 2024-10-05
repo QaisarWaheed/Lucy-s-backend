@@ -41,21 +41,25 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const params = req.params;
-  const data = await req.validate(JournalData);
-  const found = await JournalRepo.findOneBy({
-    VoucherNumber: parseInt(params.id),
-  });
-  if (!found) {
-    res.status(404).send(`No Journal Fund with ID: ${params.id}`);
-  } else {
-    const updateJournal = await JournalRepo.update(found, {
-      CreditAmount: data.CreditAmount,
-      debitAmount: data.debitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
+  try {
+    const params = req.params;
+    const data = await req.validate(JournalData);
+    const found = await JournalRepo.findOneBy({
+      VoucherNumber: parseInt(params.id),
     });
-    res.status(200).send(updateJournal);
+    if (!found) {
+      res.status(404).send(`No Journal Fund with ID: ${params.id}`);
+    } else {
+      const updateJournal = await JournalRepo.update(found, {
+        CreditAmount: data.CreditAmount,
+        debitAmount: data.debitAmount,
+        AccountCode: data.AccountCode,
+        AccountTitle: data.AccountTitle,
+      });
+      res.status(200).send(updateJournal);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

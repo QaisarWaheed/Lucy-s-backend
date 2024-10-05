@@ -44,24 +44,28 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = await req.validate(cashDebitData);
-  const params = req.params;
-  const found = await CashDebitRepo.findOneBy({
-    voucherNumber: parseInt(params.id),
-  });
-
-  if (!found) {
-    res
-      .status(404)
-      .send(`No Cash Debit record found with VoucherNumber ${params.id}`);
-  } else {
-    const updatedCashDebit = await CashDebitRepo.update(found, {
-      DebitAmount: data.DebitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-      DebitDetails: data.DebitDetails,
+  try {
+    const data = await req.validate(cashDebitData);
+    const params = req.params;
+    const found = await CashDebitRepo.findOneBy({
+      voucherNumber: parseInt(params.id),
     });
-    res.status(201).send("update Successfuly!");
+
+    if (!found) {
+      res
+        .status(404)
+        .send(`No Cash Debit record found with VoucherNumber ${params.id}`);
+    } else {
+      const updatedCashDebit = await CashDebitRepo.update(found, {
+        DebitAmount: data.DebitAmount,
+        AccountCode: data.AccountCode,
+        AccountTitle: data.AccountTitle,
+        DebitDetails: data.DebitDetails,
+      });
+      res.status(201).send("update Successfuly!");
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 router.delete("/:id", async function (req: Request, res: Response) {
