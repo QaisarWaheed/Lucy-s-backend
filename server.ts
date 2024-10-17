@@ -7,7 +7,7 @@ import journalRouter from "./src/router/journalRouter";
 import InvoiceCreditRouter from "./src/router/InvoiceCreditRouter";
 import cashbookRouter from "./src/router/cashbookRouter";
 import gstSaleRouter from "./src/router/gstSaleRouter";
-
+import cors from 'cors';
 import PurchaseInvoiceRouter from "./src/router/PurchaseInvoiceRouter";
 import PurchaseInvoiceGstRouter from "./src/router/PurchaseInvoiceGstRouter";
 import AccountOpenRouter from "./src/router/AccountOpenRouter";
@@ -15,7 +15,8 @@ import AccountOpenRouter from "./src/router/AccountOpenRouter";
 const express = require("express");
 const server = express();
 const port = 3000;
-AppDataSource.initialize();
+// AppDataSource.initialize();
+server.use(cors());
 server.use(express.json());
 server.use("/admin", adminRouter);
 server.use("/cashdebit", cashdebitRouter);

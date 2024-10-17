@@ -8,7 +8,7 @@ import { Between } from "typeorm/find-options/operator/Between";
 const router = Router()
 
 const creditRepo = AppDataSource.manager.getRepository(cashCredit)
-const debitRepo = AppDataSource.manager.getMongoRepository(cashDebit)
+const debitRepo = AppDataSource.manager.getRepository(cashDebit)
 
 
 
