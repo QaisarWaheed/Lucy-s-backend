@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import Journal from "./../entities/journal";
+import JournalData from "../validation/journal.validate";
 
 const router = Router();
 
@@ -24,14 +25,9 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.post("/", async function (req: Request, res: Response) {
   try {
-    const data = req.body;
+    const data = await req.validate(JournalData);
 
-    const newJournal = JournalRepo.create({
-      CreditAmount: data.CreditAmount,
-      debitAmount: data.debitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-    });
+    const newJournal = JournalRepo.create(data);
     await JournalRepo.save(newJournal);
     res.status(201).send(newJournal);
   } catch (e) {
@@ -40,21 +36,20 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const params = req.params;
-  const data = req.body;
-  const found = await JournalRepo.findOneBy({
-    VoucherNumber: parseInt(params.id),
-  });
-  if (!found) {
-    res.status(404).send(`No Journal Fund with ID: ${params.id}`);
-  } else {
-    const updateJournal = await JournalRepo.update(found, {
-      CreditAmount: data.CreditAmount,
-      debitAmount: data.debitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
+  try {
+    const params = req.params;
+    const data = await req.validate(JournalData);
+    const found = await JournalRepo.findOneBy({
+      VoucherNumber: parseInt(params.id),
     });
-    res.status(200).send(updateJournal);
+    if (!found) {
+      res.status(404).send(`No Journal Fund with ID: ${params.id}`);
+    } else {
+      const updateJournal = await JournalRepo.update(found, data);
+      res.status(200).send(updateJournal);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

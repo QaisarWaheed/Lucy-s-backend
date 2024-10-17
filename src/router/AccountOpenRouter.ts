@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import AccountOpen from "../entities/Accounts";
 import { Between } from "typeorm";
+import AccountOpenData from "../validation/ACcount.validate";
 
 const router = Router();
 const AccountRepo = AppDataSource.manager.getRepository(AccountOpen);
@@ -46,35 +47,45 @@ router.get("/ledger/:code", async function (req: Request, res: Response) {
 });
 
 router.post("/account-open", async function (req: Request, res: Response) {
-  const data = req.body;
-  const found = await AccountRepo.findOneBy({ Title: data.Title });
-  if (found) {
-    res.status(400).send(`An account with title: ${data.Title} already exist`);
-  } else {
-    const newAccount = AccountRepo.create({
-      Title: data.Title,
-      Debit: data.Debit,
-      Credit: data.Credit,
-    });
-    await AccountRepo.save(newAccount);
-    res.status(201).send(newAccount);
+  try {
+    const data = await req.validate(AccountOpenData);
+    const found = await AccountRepo.findOneBy({ Title: data.Title });
+    if (found) {
+      res
+        .status(400)
+        .send(`An account with title: ${data.Title} already exist`);
+    } else {
+      const newAccount = AccountRepo.create({
+        Title: data.Title,
+        Debit: data.Debit,
+        Credit: data.Credit,
+      });
+      await AccountRepo.save(newAccount);
+      res.status(201).send(newAccount);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 
 router.patch("/opening", async function (req: Request, res: Response) {
-  const data = req.body;
-  const found = await AccountRepo.findOneBy({ Title: data.Title });
-  if (!found) {
-    res
-      .status(404)
-      .send(`no record found against Account Title: ${data.Title}`);
-  } else {
-    const updatedAccount = await AccountRepo.update(found, {
-      Title: data.Title,
-      Debit: data.Debit,
-      Credit: data.Credit,
-    });
-    res.status(200).send("Account updated " + updatedAccount);
+  try {
+    const data = await req.validate(AccountOpenData);
+    const found = await AccountRepo.findOneBy({ Title: data.Title });
+    if (!found) {
+      res
+        .status(404)
+        .send(`no record found against Account Title: ${data.Title}`);
+    } else {
+      const updatedAccount = await AccountRepo.update(found, {
+        Title: data.Title,
+        Debit: data.Debit,
+        Credit: data.Credit,
+      });
+      res.status(200).send("Account updated " + updatedAccount);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { AppDataSource } from "../DB/data.source";
 import PurchaseInvoice from "./../entities/PurchaseInvoice";
+import PurchaseInvoiceData from "../validation/PurchaseInvoice.validate";
 
 const router = Router();
 
@@ -27,52 +28,32 @@ router.get("/:id", async function (req: Request, res: Response) {
 });
 
 router.post("/", async function (req: Request, res: Response) {
-  const data = req.body;
-  const newPurchaseinvoice = PInvoiceRepo.create({
-    InvoiceDate: new Date(),
-    referenceNumber: data.referenceNumber,
-    referenceDate: data.referenceDate,
-    supplier: data.supplier,
-    supplierTitle: data.supplierTitle,
-    purchase_AC: data.purchase_AC,
-    purchaseTitle: data.purchaseTitle,
-    code: data.code,
-    productName: data.productName,
-    unit: data.unit,
-    quantity: data.quantity,
-    rate: data.rate,
-    amount: data.amount,
-  });
+  try {
+    const data = await req.validate(PurchaseInvoiceData);
+    const newPurchaseinvoice = PInvoiceRepo.create(data);
 
-  await PInvoiceRepo.save(newPurchaseinvoice);
-  res.status(201).send(newPurchaseinvoice);
+    await PInvoiceRepo.save(newPurchaseinvoice);
+    res.status(201).send(newPurchaseinvoice);
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
+  }
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = req.body;
-  const params = req.params;
-  const found = await PInvoiceRepo.findOneBy({
-    invoiceNumber: parseInt(params.id),
-  });
-  if (!found) {
-    res.status(200).send(`No Purchase Invoice found against ID ${params.id}`);
-  } else {
-    const updatedPInvoice = await PInvoiceRepo.update(found, {
-      InvoiceDate: new Date(),
-      referenceNumber: data.referenceNumber,
-      referenceDate: data.referenceDate,
-      supplier: data.supplier,
-      supplierTitle: data.supplierTitle,
-      purchase_AC: data.purchase_AC,
-      purchaseTitle: data.purchaseTitle,
-      code: data.code,
-      productName: data.productName,
-      unit: data.unit,
-      quantity: data.quantity,
-      rate: data.rate,
-      amount: data.amount,
+  try {
+    const data = await req.validate(PurchaseInvoiceData);
+    const params = req.params;
+    const found = await PInvoiceRepo.findOneBy({
+      invoiceNumber: parseInt(params.id),
     });
-    res.status(200).send("Purchase Invoice Updated" + updatedPInvoice);
+    if (!found) {
+      res.status(200).send(`No Purchase Invoice found against ID ${params.id}`);
+    } else {
+      const updatedPInvoice = await PInvoiceRepo.update(found, data);
+      res.status(200).send("Purchase Invoice Updated" + updatedPInvoice);
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 

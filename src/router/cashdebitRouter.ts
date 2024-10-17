@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 
 import { AppDataSource } from "../DB/data.source";
 import cashDebit from "../entities/cashdebit";
+import cashDebitData from "../validation/CashDebit.validate";
 
 const router = Router();
 
@@ -27,13 +28,8 @@ router.get("/:id", async function (req: Request, res: Response) {
 
 router.post("/", async function (req: Request, res: Response) {
   try {
-    const data = req.body;
-    const newCashDebit = CashDebitRepo.create({
-      DebitAmount: data.DebitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-      DebitDetails: data.DebitDetails,
-    });
+    const data = await req.validate(cashDebitData);
+    const newCashDebit = CashDebitRepo.create(data);
 
     await CashDebitRepo.save(newCashDebit);
     res.status(201).send(`NewUser Created Successfully! ${newCashDebit}`);
@@ -43,24 +39,23 @@ router.post("/", async function (req: Request, res: Response) {
 });
 
 router.patch("/:id", async function (req: Request, res: Response) {
-  const data = req.body;
-  const params = req.params;
-  const found = await CashDebitRepo.findOneBy({
-    voucherNumber: parseInt(params.id),
-  });
-
-  if (!found) {
-    res
-      .status(404)
-      .send(`No Cash Debit record found with VoucherNumber ${params.id}`);
-  } else {
-    const updatedCashDebit = await CashDebitRepo.update(found, {
-      DebitAmount: data.DebitAmount,
-      AccountCode: data.AccountCode,
-      AccountTitle: data.AccountTitle,
-      DebitDetails: data.DebitDetails,
+  try {
+    const data = await req.validate(cashDebitData);
+    const params = req.params;
+    const found = await CashDebitRepo.findOneBy({
+      voucherNumber: parseInt(params.id),
     });
-    res.status(201).send("update Successfuly!");
+
+    if (!found) {
+      res
+        .status(404)
+        .send(`No Cash Debit record found with VoucherNumber ${params.id}`);
+    } else {
+      const updatedCashDebit = await CashDebitRepo.update(found, data);
+      res.status(201).send("update Successfuly!");
+    }
+  } catch (e) {
+    res.status(400).send("Data is not in correct format");
   }
 });
 router.delete("/:id", async function (req: Request, res: Response) {
